@@ -1,53 +1,47 @@
-# SmartTravel – City Exploration REST API
+# Smart Travel Explorer
 
-SmartTravel is a Spring Boot–based REST API that allows users to search
-for cities and explore their culture, traditional food, and popular
-tourist attractions.
-
-This project follows a clean layered architecture and demonstrates
-real-world backend development practices.
-
-## Tech Stack
-- Java 17
-- Spring Boot
-- Spring Data JPA
-- REST APIs
-- Maven
-- H2 / MySQL (configurable)
+🌏 **Smart Travel Explorer** is a Java Spring Boot web application to explore Indian cities with details on culture, food, and tourist spots. It includes REST APIs, search, and pagination features.
 
 ## Features
-- Search cities by name
-- RESTful API design
-- DTO-based architecture
-- Global exception handling
-- Clean service–repository structure
+- REST APIs for city management
+- Pagination and sorting
+- Search cities by name, state, or country
+- Frontend using HTML, CSS, and JavaScript
+- Dynamic rendering of city cards
+
+## Technology Stack
+- **Backend:** Java 17, Spring Boot 2.7.18, Spring Data JPA, Maven  
+- **Frontend:** HTML, CSS, JavaScript  
+- **Database:** H2 / MySQL  
+- **Version Control:** Git, GitHub  
+
+## Setup Instructions
+1. Clone the repository: `git clone https://github.com/mppurswani/smarttravel.git`
+2. Navigate to project directory: `cd smarttravel`
+3. Build the project: `mvn clean install`
+4. Run the application: `mvn spring-boot:run`
+5. Open `index.html` in a browser for the frontend.
 
 ## API Endpoints
-- `GET /api/cities` – Fetch all cities
-- `GET /api/cities/{name}` – Search city by name
+### Get All Cities (Paginated)
+`GET http://localhost:8080/api/cities?page=0&size=5&sortBy=name&sortDir=asc`
 
-## Project Structure
-- controller – Handles API requests
-- service – Business logic
-- repository – Database operations
-- dto – Data Transfer Objects
-- exception – Global exception handling
+### Get City By ID
+`GET http://localhost:8080/api/cities/{id}`
 
-## How to Run the Project
-1. Clone the repository  
-2. Navigate to the project directory  
-3. Run the application using:
+### Search Cities
+`GET http://localhost:8080/api/cities/search?name=Delhi`  
+`GET http://localhost:8080/api/cities/search?state=Karnataka`  
+`GET http://localhost:8080/api/cities/search?country=India`
 
-   `mvn spring-boot:run`
+## Frontend Usage
+- Use search box to filter cities.
+- Click **Show All Cities** to view all cities.
+- Each city card shows: Name, State, Country, Culture, Tourist Spots, Food
 
-4. API will start at `http://localhost:8080`
+## Exception Handling
+- `ResourceNotFoundException` is returned if a city is not found.
+- Global exception handling via `GlobalExceptionHandler`.
 
-## Future Enhancements
-- Pagination and sorting
-- Swagger API documentation
-- MySQL integration
-- Authentication and authorization
-
----
-
-Developed by **Mayank Purswani**
+## License
+MIT License © 2025 Mayank Purswani

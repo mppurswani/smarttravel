@@ -25,7 +25,10 @@ showAllBtn.addEventListener("click", loadAllCities);
 function loadAllCities() {
     cityContainer.innerHTML = "<p>Loading cities...</p>";
     fetch(apiUrl)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch city data");
+            return res.json();
+        })
         .then(data => renderCities(data))
         .catch(err => {
             console.error(err);
@@ -34,23 +37,23 @@ function loadAllCities() {
 }
 
 // Search city by name
-// Search city by name
 function searchCity(name) {
     cityContainer.innerHTML = "<p>Searching...</p>";
-    fetch(`${apiUrl}/search?name=${encodeURIComponent(name)}`) // matches backend /search endpoint
-        .then((res) => {
+    fetch(`${apiUrl}/search?name=${encodeURIComponent(name)}`)
+        .then(res => {
             if (!res.ok) throw new Error("Failed to fetch city data");
             return res.json();
         })
-        .then((data) => renderCities(data))
-        .catch((err) => {
+        .then(data => renderCities(data))
+        .catch(err => {
             console.error(err);
             cityContainer.innerHTML = "<p>Error fetching city data</p>";
         });
 }
 
 // Render cities
-function renderCities(cities) {
+function renderCities(data) {
+    const cities = data.content; // extract array from paginated response
     if (!cities || cities.length === 0) {
         cityContainer.innerHTML = "<p>No cities found.</p>";
         return;

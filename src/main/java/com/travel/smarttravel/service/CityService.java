@@ -1,20 +1,19 @@
 package com.travel.smarttravel.service;
 
 import com.travel.smarttravel.dto.CityDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface CityService {
 
     CityDTO addCity(CityDTO cityDTO);
 
-    List<CityDTO> getAllCities();
+    Page<CityDTO> getAllCities(int page, int size, String sortBy, String sortDir);
 
     CityDTO getCityById(Long id);
 
-    List<CityDTO> searchByName(String name);
+    Page<CityDTO> searchByName(String name, int page, int size, String sortBy, String sortDir);
 
-    List<CityDTO> searchByState(String state);
+    Page<CityDTO> searchByState(String state, int page, int size, String sortBy, String sortDir);
 
-    List<CityDTO> searchByCountry(String country);
+    Page<CityDTO> searchByCountry(String country, int page, int size, String sortBy, String sortDir);
 }

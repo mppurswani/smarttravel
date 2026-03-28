@@ -1,4 +1,5 @@
 ## SmartTravel 🌍 
+
 (Production-Ready)
 Production-ready full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
 Currently **12 cities preloaded**, scalable to 50+ via admin panel.
@@ -11,26 +12,38 @@ Register/login, BCrypt passwords, role-based access (USER/ADMIN)
 Add/remove cities per user (private/isolated)
 
 **City Categories** —
+
 Mountains ⛰️, 
+
 Beaches 🏖️, 
+
 Heritage 🏛️,
+
 Religious 🛕,
+
 Food Street 🍜,
+
 Adventure, 
+
 Party 🎉, 
+
 Hidden Gems 💎
 
 **REST APIs** —
+
 Pagination, sorting, fuzzy search (name/state/country)
 
 **Swagger UI** — 
+
 Interactive API docs + JWT auth support
 
 **Responsive UI** — 
+
 Dark/Light mode, 
 real-time Fetch API
 
 **Testing** — 
+
 10 JUnit + 
 Mockito tests (0 failures), 
 H2 test DB
@@ -73,11 +86,14 @@ mvn spring-boot:run
 ```
 
 **Service URLs**
-Frontend → http://localhost:8080
+Frontend →
+http://localhost:8080
 
-API Base → http://localhost:8080/api
+API Base →
+http://localhost:8080/api
 
-Swagger UI → http://localhost:8080/swagger-ui.html
+Swagger UI →
+http://localhost:8080/swagger-ui.html
 
 
 **API Endpoints
@@ -148,9 +164,10 @@ com.travel.smarttravel/
 | HIDDEN_GEM | 💎 | Admin can add |
 
 🔐 **Security**
+
 BCrypt hashed passwords (never plaintext)
 
-JWT tokens expire after 24h
+JWT tokens expire after 24hrs
 
 Role-based access (ADMIN: add/delete cities)
 
@@ -174,6 +191,7 @@ SmartTravelApplicationTests → 1 test (context)
 
 
 ⚡**Performance**
+
 Pagination: ~50ms avg (12-city dataset)
 
 Fuzzy search: MySQL LIKE + JPA derived queries

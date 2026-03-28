@@ -114,6 +114,7 @@ flowchart TD
 ```
 
 **Package Structure**:
+```text
 com.travel.smarttravel/
 ├── config/          → SecurityConfig, SwaggerConfig, CorsConfig
 ├── controller/      → CityController, AuthController, FavouriteController
@@ -123,6 +124,7 @@ com.travel.smarttravel/
 ├── repository/      → CityRepository, UserRepository, FavouriteCityRepository
 ├── security/        → JwtUtil, JwtAuthenticationFilter, UserDetailsServiceImpl
 └── service/         → CityService, FavouriteService, impl/CityServiceImpl
+```
 
 **City Categories**
 | Category | Emoji | Examples |

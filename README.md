@@ -9,6 +9,7 @@ JWT Authentication —
 Register/login, BCrypt passwords, role-based access (USER/ADMIN)
 
 **Favourites System** — 
+
 Add/remove cities per user (private/isolated)
 
 **City Categories** —
@@ -86,6 +87,7 @@ mvn spring-boot:run
 ```
 
 **Service URLs**
+
 Frontend →
 http://localhost:8080
 

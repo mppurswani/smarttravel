@@ -1,9 +1,9 @@
-**SmartTravel 🌍 
-(Production-Ready)**
+## SmartTravel 🌍 
+(Production-Ready)
 Production-ready full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
 Currently **12 cities preloaded**, scalable to 50+ via admin panel.
 
-✨ **Features**
+## ✨ Features
 JWT Authentication —
 Register/login, BCrypt passwords, role-based access (USER/ADMIN)
 
@@ -11,7 +11,14 @@ Register/login, BCrypt passwords, role-based access (USER/ADMIN)
 Add/remove cities per user (private/isolated)
 
 **City Categories** —
-Mountains ⛰️, Beaches 🏖️, Heritage 🏛️, Religious 🛕, Food Street 🍜, Adventure, Party 🎉, Hidden Gems 💎
+Mountains ⛰️, 
+Beaches 🏖️, 
+Heritage 🏛️,
+Religious 🛕,
+Food Street 🍜,
+Adventure, 
+Party 🎉, 
+Hidden Gems 💎
 
 **REST APIs** —
 Pagination, sorting, fuzzy search (name/state/country)
@@ -20,10 +27,13 @@ Pagination, sorting, fuzzy search (name/state/country)
 Interactive API docs + JWT auth support
 
 **Responsive UI** — 
-Dark/Light mode, real-time Fetch API
+Dark/Light mode, 
+real-time Fetch API
 
 **Testing** — 
-10 JUnit + Mockito tests (0 failures), H2 test DB
+10 JUnit + 
+Mockito tests (0 failures), 
+H2 test DB
 
 🛠 **Tech Stack**
 | Layer | Technology |

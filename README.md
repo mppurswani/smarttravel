@@ -1,7 +1,6 @@
 ## SmartTravel 🌍 
 
-(Production-Ready)
-Production-ready full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
+A full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
 Currently **12 cities preloaded**, scalable to 50+ via admin panel.
 
 ## ✨ Features
@@ -14,19 +13,19 @@ Add/remove cities per user (private/isolated)
 
 **City Categories** —
 
-Mountains ⛰️, 
+Mountains ⛰️
 
-Beaches 🏖️, 
+Beaches 🏖️
 
-Heritage 🏛️,
+Heritage 🏛️
 
-Religious 🛕,
+Religious 🛕
 
-Food Street 🍜,
+Food Street 🍜
 
-Adventure, 
+Adventure
 
-Party 🎉, 
+Party 🎉
 
 Hidden Gems 💎
 
@@ -193,18 +192,22 @@ SmartTravelApplicationTests → 1 test (context)
 
 
 ⚡**Performance**
-
-Pagination: ~50ms avg (12-city dataset)
+Pagination support
 
 Fuzzy search: MySQL LIKE + JPA derived queries
 
 JWT validation: Stateless (no DB hit/request)
 
-Memory: <200MB heap usage
+Scalable city dataset design
+
+Partial search optimisation
+
+Reduced DB load on auth checks
 
 
 
 👨‍💻 **Author**
+
 Mayank Purswani  
 📧 mayankhero2004@gmail.com
 

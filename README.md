@@ -3,15 +3,19 @@
 A full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
 Currently **12 cities preloaded**, scalable to 50+ via admin panel.
 
+
 ## ✨ Features
-JWT Authentication —
-Register/login, BCrypt passwords, role-based access (USER/ADMIN)
+
+1. JWT Authentication —
+2. Register/login, BCrypt passwords, role-based access (USER/ADMIN)
+
 
 **Favourites System** — 
 
 Add/remove cities per user (private/isolated)
 
-**City Categories** —
+
+## City Categories —
 
 Mountains ⛰️
 
@@ -29,18 +33,21 @@ Party 🎉
 
 Hidden Gems 💎
 
+
 **REST APIs** —
 
 Pagination, sorting, fuzzy search (name/state/country)
+
 
 **Swagger UI** — 
 
 Interactive API docs + JWT auth support
 
-**Responsive UI** — 
 
-Dark/Light mode, 
-real-time Fetch API
+## Responsive UI — 
+
+1. Dark/Light mode, 
+2. Real-time Fetch API
 
 **Testing** — 
 
@@ -164,17 +171,17 @@ com.travel.smarttravel/
 | PARTY | 🎉 | Bengaluru, Pune |
 | HIDDEN_GEM | 💎 | Admin can add |
 
-🔐 **Security**
+## 🔐 Security
 
-BCrypt hashed passwords (never plaintext)
+1. BCrypt hashed passwords (never plaintext)
 
-JWT tokens expire after 24hrs
+2. JWT tokens expire after 24hrs
 
-Role-based access (ADMIN: add/delete cities)
+3. Role-based access (ADMIN: add/delete cities)
 
-Session isolation — private user favourites
+4. Session isolation — private user favourites
 
-Protected endpoints — 401/403 without valid token
+5. Protected endpoints — 401/403 without valid token
 
 🧪 **Testing**
 ```bash
@@ -191,18 +198,18 @@ CityServiceTest → 5 tests (Mockito)
 SmartTravelApplicationTests → 1 test (context)
 
 
-⚡**Performance**
-Pagination support
+## ⚡Performance
+1.Pagination support
 
-Fuzzy search: MySQL LIKE + JPA derived queries
+2.Fuzzy search: MySQL LIKE + JPA derived queries
 
-JWT validation: Stateless (no DB hit/request)
+3.JWT validation: Stateless (no DB hit/request)
 
-Scalable city dataset design
+4.Scalable city dataset design
 
-Partial search optimisation
+5.Partial search optimisation
 
-Reduced DB load on auth checks
+6.Reduced DB load on auth checks
 
 
 

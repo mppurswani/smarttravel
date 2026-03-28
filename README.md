@@ -1,21 +1,24 @@
 ## SmartTravel 🌍 
 
-A full-stack Java Spring Boot application exploring **50+ Indian cities** with culture, food, hidden gems, and personalized travel recommendations.
-Currently **12 cities preloaded**, scalable to 50+ via admin panel.
+A **full-stack Java Spring Boot** city exploration and travel discovery platform featuring Indian cities, category-based browsing, hidden gems, and per-user favourites. Currently 12 cities are showcased in the frontend demo, with the backend architecture designed to scale to 50+ cities via admin APIs.
 
 
 ## ✨ Features
 
-1. JWT Authentication —
-2. Register/login, BCrypt passwords, role-based access (USER/ADMIN)
+### 🔐 JWT Authentication
+
+- User registration and login
+- BCrypt password hashing
+- Role-based access control (`ROLE_USER`, `ROLE_ADMIN`)
 
 
-**Favourites System** — 
+
+### Favourites System  
 
 Add/remove cities per user (private/isolated)
 
 
-## City Categories —
+### City Categories 
 
 Mountains ⛰️
 
@@ -27,53 +30,56 @@ Religious 🛕
 
 Food Street 🍜
 
-Adventure
+Adventure🧗
 
 Party 🎉
 
 Hidden Gems 💎
 
 
-**REST APIs** —
+### REST APIs 
 
-Pagination, sorting, fuzzy search (name/state/country)
+Pagination, sorting, and case-insensitive partial search (name/state/country)
 
 
-**Swagger UI** — 
+### Swagger UI 
 
 Interactive API docs + JWT auth support
 
 
-## Responsive UI — 
+### Frontend features
 
 1. Dark/Light mode, 
 2. Real-time Fetch API
 
-**Testing** — 
+### Testing
 
 10 JUnit + 
 Mockito tests (0 failures), 
 H2 test DB
 
-🛠 **Tech Stack**
+## 🛠 Tech Stack
 | Layer | Technology |
 | --- | --- |
 | Backend | Java 17, Spring Boot 2.7.18 |
 | Security | Spring Security, JWT (jjwt 0.11.5), BCrypt |
-| Database | MySQL 8.0 (prod), H2 (test) |
+| Database | MySQL 8.0 (production), H2 (testing) |
 | ORM | Spring Data JPA, Hibernate |
 | Frontend | HTML5, CSS3, Vanilla JS, Fetch API |
 | API Docs | Swagger UI (springdoc-openapi 1.7.0) |
 | Testing | JUnit 5, Mockito, MockMvc |
-| Build | Maven |
+| Build Tools| Maven |
 
-**Quick Start**
-**Prerequisites**
-Java 17+
-Maven 3.8+
-MySQL 8.0+
+## Quick Start
+### Prerequisites
 
-**Run Locally**
+- Java 17+
+  
+- Maven 3.8+
+  
+- MySQL 8.0+
+
+### Run Locally
 ```bash
 git clone https://github.com/mppurswani/smarttravel.git
 cd smarttravel
@@ -92,7 +98,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-**Service URLs**
+### Service URLs
 
 Frontend →
 http://localhost:8080
@@ -104,16 +110,16 @@ Swagger UI →
 http://localhost:8080/swagger-ui.html
 
 
-**API Endpoints
-Auth (Public)**
+## API Endpoints
+### Auth (Public)
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | /api/auth/register | Create account (JWT) |
-| POST | /api/auth/login | Login (JWT) |
+| POST | /api/auth/register | Register new user and return JWT  |
+| POST | /api/auth/login |  Login and return JWT |
 
 
-**Cities (Public)**
+### Cities (Public)
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | GET | /api/cities/all | All cities |
@@ -124,13 +130,13 @@ Auth (Public)**
 | GET | /api/cities/hidden-gems | Hidden gems 💎 |
 
 
-**Cities (Admin Only)**
+### Cities (Admin Only)
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | POST | /api/cities | Add city |
 | DELETE | /api/cities/{id} | Delete city |
 
-**Favourites (Login Required)**
+### Favourites (Login Required)
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | GET | /api/favourites | My favourites |
@@ -138,7 +144,7 @@ Auth (Public)**
 | DELETE | /api/favourites/{cityId} | Remove favourite |
 
 
-**Architecture diagram**:
+## Architecture diagram:
 ```mermaid
 flowchart TD
     Controller --> Service --> Repository --> MySQL
@@ -147,20 +153,42 @@ flowchart TD
     CorsConfig --> FrontendIntegration
 ```
 
-**Package Structure**:
+## Core Package Structure:
 ```text
 com.travel.smarttravel/
-├── config/          → SecurityConfig, SwaggerConfig, CorsConfig
-├── controller/      → CityController, AuthController, FavouriteController
-├── dto/             → CityDTO, AuthRequest, AuthResponse
-├── entity/          → City, User, FavouriteCity, CityCategory (enum)
-├── exception/       → ResourceNotFoundException
-├── repository/      → CityRepository, UserRepository, FavouriteCityRepository
-├── security/        → JwtUtil, JwtAuthenticationFilter, UserDetailsServiceImpl
-└── service/         → CityService, FavouriteService, impl/CityServiceImpl
+├── SmartTravelApplication.java
+├── config/              → SecurityConfig, SwaggerConfig, CorsConfig
+├── controller/          → AuthController, CityController, FavouriteController
+├── dto/                 → CityDTO, AuthRequest, AuthResponse
+├── entity/              → City, User, FavouriteCity, CityCategory
+├── exception/           → GlobalExceptionHandler, ResourceNotFoundException
+├── repository/          → CityRepository, UserRepository, FavouriteCityRepository
+├── security/            → JwtUtil, JwtAuthenticationFilter, UserDetailsServiceImpl
+└── service/             → CityService, FavouriteService, impl/CityServiceImpl, FavouriteServiceImpl
 ```
 
-**City Categories**
+## 🏙️ Frontend Demo Cities (Currently Showcased)
+
+The frontend currently showcases **12 curated Indian cities** across multiple categories:
+
+- **HERITAGE 🏛️** — Ahmedabad, Delhi, Jaipur, Kolkata
+- **PARTY 🎉** — Bengaluru, Pune
+- **MOUNTAINS ⛰️** — Chandigarh
+- **BEACHES 🏖️** — Chennai, Kochi
+- **FOOD_STREET 🍜** — Hyderabad, Mumbai
+- **RELIGIOUS 🛕** — Varanasi
+
+Additional categories such as **ADVENTURE 🧗** and **HIDDEN_GEM 💎** are supported by the backend/admin workflow and can be expanded further.
+
+These cities include curated details such as:
+- Culture overview
+- Popular attractions
+- Famous local food
+- Best time to visit (for selected cities)
+- Language (for selected cities)
+- Entry fee (for selected cities)
+
+## City Categories
 | Category | Emoji | Examples |
 | --- | --- | --- |
 | MOUNTAINS | ⛰️ | Chandigarh |
@@ -169,29 +197,28 @@ com.travel.smarttravel/
 | RELIGIOUS | 🛕 | Varanasi |
 | FOOD_STREET | 🍜 | Hyderabad, Mumbai |
 | PARTY | 🎉 | Bengaluru, Pune |
-| HIDDEN_GEM | 💎 | Admin can add |
+| HIDDEN_GEMS | 💎 | Admin can add |
+| ADVENTURE | 🧗 | Admin can add |
 
 ## 🔐 Security
 
-1. BCrypt hashed passwords (never plaintext)
+- BCrypt-hashed passwords (never stored in plaintext)
+- JWT-based authentication with token expiry
+- Role-based access control:
+  - `ROLE_ADMIN` → add/delete cities
+  - `ROLE_USER` → manage favourites
+- Protected endpoints return proper `401/403` responses
+- Per-user favourites remain isolated through authenticated JWT identity
 
-2. JWT tokens expire after 24hrs
-
-3. Role-based access (ADMIN: add/delete cities)
-
-4. Session isolation — private user favourites
-
-5. Protected endpoints — 401/403 without valid token
-
-🧪 **Testing**
+## 🧪 Testing
 ```bash
 mvn test
 ```
 
-**Results**:
+### Results:
 Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
 
-**Breakdown**:
+### Breakdown:
 
 CityControllerTest → 4 tests (MockMvc)
 CityServiceTest → 5 tests (Mockito)
@@ -199,21 +226,21 @@ SmartTravelApplicationTests → 1 test (context)
 
 
 ## ⚡Performance
-1.Pagination support
-
-2.Fuzzy search: MySQL LIKE + JPA derived queries
-
-3.JWT validation: Stateless (no DB hit/request)
-
-4.Scalable city dataset design
-
-5.Partial search optimisation
-
-6.Reduced DB load on auth checks
 
 
+- Pagination support for scalable city listing
+  
+- Case-insensitive partial search by name, state, and country
+  
+- Stateless JWT-based authentication flow
+  
+- Lightweight demo dataset with scalable admin-driven expansion
+  
+- Search across city name, state, and country fields
 
-👨‍💻 **Author**
+
+
+## 👨‍💻 Author
 
 Mayank Purswani  
 📧 mayankhero2004@gmail.com

@@ -94,7 +94,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public List<CityDTO> getHiddenGems() {
-        return cityRepository.findByIsHiddenGemTrue().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return cityRepository.findByHiddenGemTrue().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private CityDTO convertToDTO(City city) {

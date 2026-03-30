@@ -1,6 +1,5 @@
 package com.travel.smarttravel.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
@@ -33,9 +32,8 @@ public class City {
     @Column(name = "category")
     private CityCategory category;
 
-    @JsonProperty("isHiddenGem")
     @Column(name = "is_hidden_gem")
-    private boolean isHiddenGem = false;
+    private boolean hiddenGem = false;
 
     @Column(name = "best_time_to_visit")
     private String bestTimeToVisit;
@@ -76,8 +74,8 @@ public class City {
     public CityCategory getCategory() { return category; }
     public void setCategory(CityCategory category) { this.category = category; }
 
-    public boolean isHiddenGem() { return isHiddenGem; }
-    public void setHiddenGem(boolean hiddenGem) { this.isHiddenGem = hiddenGem; }
+    public boolean isHiddenGem() { return hiddenGem; }
+    public void setHiddenGem(boolean hiddenGem) { this.hiddenGem = hiddenGem; }
 
     public String getBestTimeToVisit() { return bestTimeToVisit; }
     public void setBestTimeToVisit(String bestTimeToVisit) { this.bestTimeToVisit = bestTimeToVisit; }

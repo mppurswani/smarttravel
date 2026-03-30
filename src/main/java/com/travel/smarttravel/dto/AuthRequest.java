@@ -1,5 +1,6 @@
 package com.travel.smarttravel.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class AuthRequest {
@@ -10,6 +11,7 @@ public class AuthRequest {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @Email(message = "Invalid email format")
     private String email; // only used during registration
 
     public String getUsername() { return username; }

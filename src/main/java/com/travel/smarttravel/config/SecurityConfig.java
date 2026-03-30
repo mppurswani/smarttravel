@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,15 +29,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 
                 // ===== PUBLIC FRONTEND FILES =====
                 .antMatchers(
                     "/",
                     "/index.html",
-                    "/style.css",
-                    "/app.js",
-                    "/favicon.ico"
+                    "/favicon.ico",
+                    "/*.css",
+                    "/*.js",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/assets/**"
                 ).permitAll()
 
                 // ===== PUBLIC AUTH ENDPOINTS =====
@@ -44,6 +52,9 @@ public class SecurityConfig {
 
                 // ===== PUBLIC HEALTH ENDPOINT =====
                 .antMatchers("/api/health").permitAll()
+
+                // ===== SPRING ERROR ENDPOINT =====
+                .antMatchers("/error").permitAll()
 
                 // ===== SWAGGER / OPENAPI =====
                 .antMatchers(
@@ -69,8 +80,7 @@ public class SecurityConfig {
                 // ===== EVERYTHING ELSE =====
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

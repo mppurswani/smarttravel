@@ -1,6 +1,6 @@
 package com.travel.smarttravel.security;
 
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -9,7 +9,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,23 +34,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
-            if (jwtUtil.isTokenValid(token)) {
+            if (jwtUtil.isTokenValid(token) &&
+                !jwtUtil.isTokenExpired(token) &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
+
                 String username = jwtUtil.extractUsername(token);
                 String role = jwtUtil.extractRole(token);
+                String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
 
                 UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        List.of(new SimpleGrantedAuthority(role))
-                    );
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                List.of(new SimpleGrantedAuthority(authority))
+                        );
 
                 authentication.setDetails(
-                    new WebAuthenticationDetailsSource()
-                        .buildDetails(request));
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 

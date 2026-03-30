@@ -34,10 +34,17 @@ public class FavouriteService {
     // GET LOGGED-IN USER FROM JWT TOKEN
     // ==========================================
     private User getLoggedInUser() {
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+    var authentication = SecurityContextHolder
+            .getContext()
+            .getAuthentication();
+
+    if (authentication == null
+            || !authentication.isAuthenticated()
+            || "anonymousUser".equals(authentication.getName())) {
+        throw new ResourceNotFoundException("Authenticated user not found");
+    }
+
+    String username = authentication.getName();
         return userRepository.findByUsername(username)
                 .orElseThrow(() ->
                     new ResourceNotFoundException(
@@ -47,6 +54,7 @@ public class FavouriteService {
     // ==========================================
     // ADD CITY TO FAVOURITES
     // ==========================================
+    @Transactional
     public String addFavourite(Long cityId) {
         User user = getLoggedInUser();
 

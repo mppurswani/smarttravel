@@ -1,14 +1,33 @@
-# Start with a Java 17 image
-FROM eclipse-temurin:17-jdk-alpine
+# ===============================
+# Stage 1: Build the application
+# ===============================
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven built jar into the container
-COPY target/smarttravel-0.0.1-SNAPSHOT.jar app.jar
+# Copy pom first for better layer caching
+COPY pom.xml .
 
-# Expose the port your Spring Boot app runs on
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build the jar (skip tests for faster cloud deploy)
+RUN mvn clean package -DskipTests
+
+# ===============================
+# Stage 2: Run the application
+# ===============================
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copy built jar from build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Railway provides PORT env var
 EXPOSE 8080
 
-# Run the jar file
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

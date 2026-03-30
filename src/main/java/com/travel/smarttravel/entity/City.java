@@ -11,16 +11,24 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "state")
     private String state;
+
+    @Column(name = "country")
     private String country;
+
+    @Column(name = "culture")
     private String culture;
+
+    @Column(name = "tourist_spots")
     private String touristSpots;
+
+    @Column(name = "food")
     private String food;
 
-    // ==========================================
-    // NEW FIELDS
-    // ==========================================
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private CityCategory category;

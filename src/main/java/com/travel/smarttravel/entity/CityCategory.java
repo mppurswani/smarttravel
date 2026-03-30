@@ -2,11 +2,9 @@ package com.travel.smarttravel.entity;
 
 public enum CityCategory {
     MOUNTAINS,
-    BEACHES,
+    BEACH,
     PARTY,
-    RELIGIOUS,
-    FOOD_STREET,
-    ADVENTURE,
+    NATURE,
     HERITAGE,
-    HIDDEN_GEM
+    SPIRITUAL
 }

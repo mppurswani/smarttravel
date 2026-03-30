@@ -12,5 +12,5 @@ public interface CityRepository extends JpaRepository<City, Long> {
     Page<City> findByStateIgnoreCaseContaining(String state, Pageable pageable);
     Page<City> findByCountryIgnoreCaseContaining(String country, Pageable pageable);
  List<City> findByCategory(CityCategory category);
-List<City> findByIsHiddenGemTrue();
+List<City> findByHiddenGemTrue();
 }

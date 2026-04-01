@@ -75,7 +75,7 @@ public class CityController {
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
 
-        if (keyword != null && !keyword.isEmpty()) {
+        if (keyword != null && !keyword.trim().isEmpty()) {
             return cityService.searchByKeyword(keyword, page, size, sortBy, sortDir);
         }
 

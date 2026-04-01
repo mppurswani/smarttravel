@@ -495,7 +495,7 @@ async function searchCities() {
 
   try {
     await loadMyFavIds();
-    const res = await fetch(API_BASE + "/cities/search?name=" + encodeURIComponent(keyword));
+    const res = await fetch(API_BASE + "/cities/search?keyword=" + encodeURIComponent(keyword));
 
     if (!res.ok) throw new Error("Search failed");
 

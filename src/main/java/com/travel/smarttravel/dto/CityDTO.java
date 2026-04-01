@@ -1,6 +1,5 @@
 package com.travel.smarttravel.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.travel.smarttravel.entity.CityCategory;
 import javax.validation.constraints.NotBlank;
 
@@ -23,16 +22,14 @@ public class CityDTO {
 
     private CityCategory category;
 
-    @JsonProperty("isHiddenGem")
-    private boolean isHiddenGem;
+    private boolean hiddenGem;
 
     private String bestTimeToVisit;
     private String nearbyAttractions;
     private String language;
     private String entryFee;
 
-    @JsonProperty("isFavourited")
-    private boolean isFavourited;
+    private boolean favourited;
 
     // ==========================================
     // GETTERS & SETTERS
@@ -61,8 +58,8 @@ public class CityDTO {
     public CityCategory getCategory() { return category; }
     public void setCategory(CityCategory category) { this.category = category; }
 
-    public boolean isHiddenGem() { return isHiddenGem; }
-    public void setHiddenGem(boolean hiddenGem) { this.isHiddenGem = hiddenGem; }
+    public boolean isHiddenGem() { return hiddenGem; }
+    public void setHiddenGem(boolean hiddenGem) { this.hiddenGem = hiddenGem; }
 
     public String getBestTimeToVisit() { return bestTimeToVisit; }
     public void setBestTimeToVisit(String bestTimeToVisit) { this.bestTimeToVisit = bestTimeToVisit; }
@@ -76,6 +73,6 @@ public class CityDTO {
     public String getEntryFee() { return entryFee; }
     public void setEntryFee(String entryFee) { this.entryFee = entryFee; }
 
-    public boolean isFavourited() { return isFavourited; }
-    public void setFavourited(boolean favourited) { this.isFavourited = favourited; }
+    public boolean isFavourited() { return favourited; }
+    public void setFavourited(boolean favourited) { this.favourited = favourited; }
 }

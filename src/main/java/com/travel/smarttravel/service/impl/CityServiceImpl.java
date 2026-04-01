@@ -41,7 +41,10 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Page<CityDTO> getAllCities(int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         Pageable pageable = PageRequest.of(page, size, sort);
         return cityRepository.findAll(pageable).map(this::convertToDTO);
     }
@@ -63,38 +66,71 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public List<CityDTO> getAllCitiesWithoutPagination() {
-        return cityRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return cityRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Page<CityDTO> searchByName(String name, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(page, size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
         return cityRepository.findByNameIgnoreCaseContaining(name, pageable).map(this::convertToDTO);
     }
 
     @Override
     public Page<CityDTO> searchByState(String state, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(page, size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
         return cityRepository.findByStateIgnoreCaseContaining(state, pageable).map(this::convertToDTO);
     }
 
     @Override
+    public Page<CityDTO> searchByKeyword(String keyword, int page, int size, String sortBy, String sortDir) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+
+        return cityRepository
+                .findByNameContainingIgnoreCaseOrStateContainingIgnoreCaseOrCountryContainingIgnoreCase(
+                        keyword, keyword, keyword, pageable
+                )
+                .map(this::convertToDTO);
+    }
+
+    @Override
     public Page<CityDTO> searchByCountry(String country, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(page, size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
         return cityRepository.findByCountryIgnoreCaseContaining(country, pageable).map(this::convertToDTO);
     }
 
     @Override
     public List<CityDTO> getCitiesByCategory(CityCategory category) {
-        return cityRepository.findByCategory(category).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return cityRepository.findByCategory(category)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CityDTO> getHiddenGems() {
-        return cityRepository.findByHiddenGemTrue().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return cityRepository.findByHiddenGemTrue()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     private CityDTO convertToDTO(City city) {

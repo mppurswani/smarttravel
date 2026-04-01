@@ -50,18 +50,15 @@ public class CityController {
 
     // DELETE /api/cities/{id}
     @DeleteMapping("/{id}")
-public ResponseEntity<?> deleteCity(@PathVariable Long id) {
-    try {
-        cityService.deleteCity(id);
-        return ResponseEntity.noContent().build();
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("City with id " + id + " not found");
+    public ResponseEntity<?> deleteCity(@PathVariable Long id) {
+        try {
+            cityService.deleteCity(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("City with id " + id + " not found");
+        }
     }
-}
-
-// GET /api/cities/category/{category} already returns bad request
-// ✅ keep as is for structured message
 
     // GET /api/cities/all
     @GetMapping("/all")
@@ -69,39 +66,35 @@ public ResponseEntity<?> deleteCity(@PathVariable Long id) {
         return cityService.getAllCitiesWithoutPagination();
     }
 
-    // GET /api/cities/search
+    // GET /api/cities/search?keyword=mumbai
     @GetMapping("/search")
     public Page<CityDTO> searchCities(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String state,
-            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        if (name != null && !name.isEmpty()) {
-            return cityService.searchByName(name, page, size, sortBy, sortDir);
-        } else if (state != null && !state.isEmpty()) {
-            return cityService.searchByState(state, page, size, sortBy, sortDir);
-        } else if (country != null && !country.isEmpty()) {
-            return cityService.searchByCountry(country, page, size, sortBy, sortDir);
+
+        if (keyword != null && !keyword.isEmpty()) {
+            return cityService.searchByKeyword(keyword, page, size, sortBy, sortDir);
         }
+
         return cityService.getAllCities(page, size, sortBy, sortDir);
     }
 
     // GET /api/cities/category/BEACHES
-   @GetMapping("/category/{category}")
-public ResponseEntity<?> getCitiesByCategory(@PathVariable String category) {
-    try {
-        CityCategory cat = CityCategory.valueOf(category.toUpperCase());
-        return ResponseEntity.ok(cityService.getCitiesByCategory(cat));
-    } catch (IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(
-            "Invalid category: " + category
-            + ". Valid: MOUNTAINS, BEACHES, PARTY, RELIGIOUS, FOOD_STREET, ADVENTURE, HERITAGE, HIDDEN_GEM"
-        );
+    @GetMapping("/category/{category}")
+    public ResponseEntity<?> getCitiesByCategory(@PathVariable String category) {
+        try {
+            CityCategory cat = CityCategory.valueOf(category.toUpperCase());
+            return ResponseEntity.ok(cityService.getCitiesByCategory(cat));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    "Invalid category: " + category
+                            + ". Valid: MOUNTAINS, BEACHES, PARTY, RELIGIOUS, FOOD_STREET, ADVENTURE, HERITAGE, HIDDEN_GEM"
+            );
+        }
     }
-}
 
     // GET /api/cities/hidden-gems
     @GetMapping("/hidden-gems")

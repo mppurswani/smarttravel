@@ -1,7 +1,7 @@
 // ==========================================
 // CONFIG
 // ==========================================
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://smarttravel-production-182f.up.railway.app/api";
 const TOKEN_KEY = "smarttravel_token";
 const USER_KEY = "smarttravel_user";
 

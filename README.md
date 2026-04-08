@@ -1,6 +1,6 @@
 ## SmartTravel 🌍 
 
-A **full-stack Java Spring Boot** city exploration and travel discovery platform featuring Indian cities, category-based browsing, hidden gems, and per-user favourites. Currently 12 cities are showcased in the frontend demo, with the backend architecture designed to scale to 50+ cities via admin APIs.
+A **full-stack Java Spring Boot** city exploration and travel discovery platform featuring Indian cities, category-based browsing, hidden gems, and per-user favourites. The current demo showcases 12  curated cities , while the backend architecture supports scalable city expansion through admin APIs.
 
 
 ## ✨ Features
@@ -39,7 +39,7 @@ Hidden Gems 💎
 
 ### REST APIs 
 
-Pagination, sorting, and case-insensitive partial search (name/state/country)
+Pagination and case-insensitive partial search (name/state/country)
 
 
 ### Swagger UI 
@@ -50,13 +50,12 @@ Interactive API docs + JWT auth support
 ### Frontend features
 
 1. Dark/Light mode, 
-2. Real-time Fetch API
+2. Dynamic data rendering using Fetch API
 
 ### Testing
-
-10 JUnit + 
-Mockito tests (0 failures), 
-H2 test DB
+- Unit and application context tests using JUnit 5 and  Mockito.
+- H2 used for test configuration
+- Current test suite passes successfully
 
 ## 🛠 Tech Stack
 | Layer | Technology |
@@ -147,24 +146,60 @@ http://localhost:8080/swagger-ui.html
 ## Architecture diagram:
 ```mermaid
 flowchart TD
-    Controller --> Service --> Repository --> MySQL
-    JwtAuthenticationFilter --> SecurityConfig --> RoleBasedAccess
-    GlobalExceptionHandler --> ResourceNotFoundException --> HTTPCodes
-    CorsConfig --> FrontendIntegration
-```
+    Frontend["Static Frontend (HTML/CSS/JS)"] --> Controller["Controller Layer"]
+    Controller --> Service["Service Layer"]
+    Service --> Repository["Repository Layer"]
+    Repository --> MySQL["MySQL Database"]
 
+    JwtFilter["JwtAuthenticationFilter"] --> SecurityConfig["SecurityConfig"]
+    SecurityConfig --> ProtectedEndpoints["Protected API Endpoints"]
+
+    Service --> ResourceNotFound["ResourceNotFoundException"]
+    ResourceNotFound --> GlobalException["GlobalExceptionHandler"]
+
+    Cors["CorsConfig"] --> Frontend
+    Swagger["SwaggerConfig"] --> SwaggerUI["Swagger UI / OpenAPI Docs"]
+```
 ## Core Package Structure:
 ```text
 com.travel.smarttravel/
 ├── SmartTravelApplication.java
-├── config/              → SecurityConfig, SwaggerConfig, CorsConfig
-├── controller/          → AuthController, CityController, FavouriteController
-├── dto/                 → CityDTO, AuthRequest, AuthResponse
-├── entity/              → City, User, FavouriteCity, CityCategory
-├── exception/           → GlobalExceptionHandler, ResourceNotFoundException
-├── repository/          → CityRepository, UserRepository, FavouriteCityRepository
-├── security/            → JwtUtil, JwtAuthenticationFilter, UserDetailsServiceImpl
-└── service/             → CityService, FavouriteService, impl/CityServiceImpl, FavouriteServiceImpl
+├── CorsConfig.java
+├── config/
+│   ├── LocaleConfig.java
+│   ├── SecurityConfig.java
+│   └── SwaggerConfig.java
+├── controller/
+│   ├── AuthController.java
+│   ├── CityController.java
+│   ├── FavouriteController.java
+│   ├── HealthController.java
+│   └── exception/
+│       └── GlobalExceptionHandler.java
+├── dto/
+│   ├── AuthRequest.java
+│   ├── AuthResponse.java
+│   └── CityDTO.java
+├── entity/
+│   ├── City.java
+│   ├── CityCategory.java
+│   ├── FavouriteCity.java
+│   └── User.java
+├── exception/
+│   └── ResourceNotFoundException.java
+├── repository/
+│   ├── CityRepository.java
+│   ├── FavouriteCityRepository.java
+│   └── UserRepository.java
+├── security/
+│   ├── JwtAuthenticationFilter.java
+│   ├── JwtUtil.java
+│   └── UserDetailsServiceImpl.java
+└── service/
+    ├── CityService.java
+    ├── FavouriteService.java
+    └── impl/
+        └── CityServiceImpl.java
 ```
 
 ## 🏙️ Frontend Demo Cities (Currently Showcased)
@@ -216,7 +251,11 @@ mvn test
 ```
 
 ### Results:
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+Current test suite passes successfully with 0 failures.
+
+### Included Test Classes:
+-CityServiceTest
+-SmartTravelApplicationTests
 
 ### Breakdown:
 
@@ -227,16 +266,10 @@ SmartTravelApplicationTests → 1 test (context)
 
 ## ⚡Performance
 
-
 - Pagination support for scalable city listing
-  
-- Case-insensitive partial search by name, state, and country
-  
+- Case-insensitive partial search across city name, state, and country
 - Stateless JWT-based authentication flow
-  
-- Lightweight demo dataset with scalable admin-driven expansion
-  
-- Search across city name, state, and country fields
+- Lightweight demo dataset with admin-driven expansion support
 
 
 

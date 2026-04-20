@@ -7,7 +7,6 @@ import com.travel.smarttravel.exception.ResourceNotFoundException;
 import com.travel.smarttravel.repository.CityRepository;
 import com.travel.smarttravel.service.CityService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,17 +37,6 @@ public class CityServiceImpl implements CityService {
                           .map(this::convertToDTO)
                           .collect(Collectors.toList());
     }
-
-    @Override
-    public Page<CityDTO> getAllCities(int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return cityRepository.findAll(pageable).map(this::convertToDTO);
-    }
-
     @Override
     public CityDTO getCityById(Long id) {
         City city = cityRepository.findById(id)
@@ -73,48 +61,39 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public Page<CityDTO> searchByName(String name, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
-        return cityRepository.findByNameIgnoreCaseContaining(name, pageable).map(this::convertToDTO);
+    public List<CityDTO> searchByName(String name){
+        return cityRepository.findByNameIgnoreCaseContaining(name)
+        .stream()
+        .map(this::convertToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
-    public Page<CityDTO> searchByState(String state, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
-        return cityRepository.findByStateIgnoreCaseContaining(state, pageable).map(this::convertToDTO);
+    public List<CityDTO> searchByState(String state){
+        return cityRepository.findByStateIgnoreCaseContaining(state)
+        .stream()
+        .map(this::convertToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
-    public Page<CityDTO> searchByKeyword(String keyword, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
+    public List<CityDTO> searchByKeyword(String keyword){
 
         return cityRepository
                 .findByNameContainingIgnoreCaseOrStateContainingIgnoreCaseOrCountryContainingIgnoreCase(
-                        keyword, keyword, keyword, pageable
+                        keyword, keyword, keyword
                 )
-                .map(this::convertToDTO);
+                .stream()
+        .map(this::convertToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
-    public Page<CityDTO> searchByCountry(String country, int page, int size, String sortBy, String sortDir) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
-        );
-        return cityRepository.findByCountryIgnoreCaseContaining(country, pageable).map(this::convertToDTO);
+    public List<CityDTO> searchByCountry(String country){
+        return cityRepository.findByCountryIgnoreCaseContaining(country)
+        .stream()
+        .map(this::convertToDTO)
+        .collect(Collectors.toList());
     }
 
     @Override

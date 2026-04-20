@@ -3,7 +3,6 @@ package com.travel.smarttravel.controller;
 import com.travel.smarttravel.dto.CityDTO;
 import com.travel.smarttravel.entity.CityCategory;
 import com.travel.smarttravel.service.CityService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +33,8 @@ public class CityController {
 
     // GET /api/cities
     @GetMapping
-    public Page<CityDTO> getAllCities(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
-        return cityService.getAllCities(page, size, sortBy, sortDir);
+    public List<CityDTO> getAllCities(){
+        return cityService.getAllCitiesWithoutPagination();
     }
 
     // GET /api/cities/{id}
@@ -60,27 +55,16 @@ public class CityController {
         }
     }
 
-    // GET /api/cities/all
-    @GetMapping("/all")
-    public List<CityDTO> getAllCitiesWithoutPagination() {
+    // GET /api/cities/search?keyword=mumbai
+   @GetMapping("/search")
+public List<CityDTO> searchCities(@RequestParam(required = false) String keyword) {
+
+    if (keyword == null || keyword.trim().isEmpty()) {
         return cityService.getAllCitiesWithoutPagination();
     }
 
-    // GET /api/cities/search?keyword=mumbai
-    @GetMapping("/search")
-    public Page<CityDTO> searchCities(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
-
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            return cityService.searchByKeyword(keyword, page, size, sortBy, sortDir);
-        }
-
-        return cityService.getAllCities(page, size, sortBy, sortDir);
-    }
+    return cityService.searchByKeyword(keyword);
+}
 
     // GET /api/cities/category/BEACHES
     @GetMapping("/category/{category}")

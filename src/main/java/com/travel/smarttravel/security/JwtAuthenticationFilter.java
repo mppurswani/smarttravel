@@ -29,34 +29,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        String path = request.getRequestURI();
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        // ✅ SKIP PUBLIC ENDPOINTS
+        if (path.startsWith("/api/cities")
+                || path.startsWith("/api/auth")
+                || path.startsWith("/swagger")
+                || path.startsWith("/v3/api-docs")) {
 
-            if (jwtUtil.isTokenValid(token) &&
-                !jwtUtil.isTokenExpired(token) &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                String username = jwtUtil.extractUsername(token);
-                String role = jwtUtil.extractRole(token);
-                String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                List.of(new SimpleGrantedAuthority(authority))
-                        );
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        try {
+            String authHeader = request.getHeader("Authorization");
+
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+                String token = authHeader.substring(7);
+
+                if (jwtUtil.isTokenValid(token)
+                        && !jwtUtil.isTokenExpired(token)
+                        && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    String username = jwtUtil.extractUsername(token);
+                    String role = jwtUtil.extractRole(token);
+                    String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    null,
+                                    List.of(new SimpleGrantedAuthority(authority))
+                            );
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+        }
+
+        // ✅ ALWAYS CONTINUE CHAIN
         filterChain.doFilter(request, response);
     }
 }

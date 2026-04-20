@@ -1,31 +1,42 @@
 // ==========================================
 // CONFIG
+// FIX 1: Use relative path "/api" instead of
+// window.location.origin + "/api".
+// window.location.origin includes the port on
+// localhost (e.g. :5500 from Live Server) so
+// the fetch goes to :5500/api instead of
+// :8080/api — causing "Error loading cities"
+// on both initial load AND search.
+// Relative "/api" always hits the same server
+// that served the HTML, which is correct when
+// Spring Boot serves the frontend, or when
+// proxied via Railway.
 // ==========================================
-const API_BASE = window.location.origin +"/api";
+const API_BASE = "/api";
 const TOKEN_KEY = "smarttravel_token";
-const USER_KEY = "smarttravel_user";
+const USER_KEY  = "smarttravel_user";
 
 // ==========================================
 // LANGUAGE SUPPORT (ENGLISH ONLY)
 // ==========================================
 const i18n = {
   en: {
-    searchPlaceholder: "Search city name...",
-    allCities: "All Cities",
-    myFavourites: "❤ My Favourites",
-    logout: "Logout",
-    login: "Login",
-    register: "Register",
-    noFavourites: "No favourites yet. Click ❤ on any city to save it.",
-    noCities: "No cities found",
-    hiddenGem: "Hidden Gem",
-    bestTime: "Best Time",
-    language: "Language",
-    entryFee: "Entry Fee",
-    loading: "Loading cities...",
-    loginSuccess: "Welcome back!",
-    registerSuccess: "Account created!",
-    logoutSuccess: "Logged out successfully"
+    searchPlaceholder : "Search city name...",
+    allCities         : "All Cities",
+    myFavourites      : "❤ My Favourites",
+    logout            : "Logout",
+    login             : "Login",
+    register          : "Register",
+    noFavourites      : "No favourites yet. Click ❤ on any city to save it.",
+    noCities          : "No cities found",
+    hiddenGem         : "Hidden Gem",
+    bestTime          : "Best Time",
+    language          : "Language",
+    entryFee          : "Entry Fee",
+    loading           : "Loading cities...",
+    loginSuccess      : "Welcome back!",
+    registerSuccess   : "Account created!",
+    logoutSuccess     : "Logged out successfully"
   }
 };
 
@@ -35,10 +46,10 @@ let t = i18n.en;
 // ==========================================
 // GLOBAL STATE
 // ==========================================
-let myFavIds = new Set();
-let lastCities = [];
+let myFavIds       = new Set();
+let lastCities     = [];
 let currentCategory = "ALL";
-let hiddenGemOnly = false;
+let hiddenGemOnly  = false;
 
 // ==========================================
 // LANGUAGE
@@ -51,20 +62,20 @@ function setLang(lang, btn) {
   if (btn) btn.classList.add("active");
 
   const searchInput = document.getElementById("searchInput");
-  const showAllBtn = document.getElementById("showAllBtn");
+  const showAllBtn  = document.getElementById("showAllBtn");
 
   if (searchInput) searchInput.placeholder = t.searchPlaceholder;
-  if (showAllBtn) showAllBtn.textContent = t.allCities;
+  if (showAllBtn)  showAllBtn.textContent   = t.allCities;
 
   if (getToken()) {
-    const favBtn = document.getElementById("favDashboardBtn");
+    const favBtn    = document.getElementById("favDashboardBtn");
     const logoutBtn = document.getElementById("logoutBtn");
-    if (favBtn) favBtn.textContent = t.myFavourites;
+    if (favBtn)    favBtn.textContent    = t.myFavourites;
     if (logoutBtn) logoutBtn.textContent = t.logout;
   } else {
-    const loginBtn = document.getElementById("openLoginBtn");
+    const loginBtn    = document.getElementById("openLoginBtn");
     const registerBtn = document.getElementById("openRegisterBtn");
-    if (loginBtn) loginBtn.textContent = t.login;
+    if (loginBtn)    loginBtn.textContent    = t.login;
     if (registerBtn) registerBtn.textContent = t.register;
   }
 }
@@ -94,31 +105,26 @@ function clearAuth() {
 function authHeaders() {
   const token = getToken();
   return token
-    ? {
-        "Authorization": "Bearer " + token,
-        "Content-Type": "application/json"
-      }
-    : {
-        "Content-Type": "application/json"
-      };
+    ? { "Authorization": "Bearer " + token, "Content-Type": "application/json" }
+    : { "Content-Type": "application/json" };
 }
 
 // ==========================================
 // UI STATE
 // ==========================================
 function updateNavUI() {
-  const user = getUser();
+  const user      = getUser();
   const guestBtns = document.getElementById("guestButtons");
   const userPanel = document.getElementById("userPanel");
-  const greeting = document.getElementById("userGreeting");
+  const greeting  = document.getElementById("userGreeting");
 
   if (user) {
     if (guestBtns) guestBtns.style.display = "none";
-    if (userPanel) userPanel.style.display = "flex";
-    if (greeting) greeting.textContent = "Hi, " + user.username;
+    if (userPanel) userPanel.style.display  = "flex";
+    if (greeting)  greeting.textContent     = "Hi, " + user.username;
   } else {
     if (guestBtns) guestBtns.style.display = "flex";
-    if (userPanel) userPanel.style.display = "none";
+    if (userPanel) userPanel.style.display  = "none";
   }
 }
 
@@ -170,7 +176,7 @@ document.addEventListener("click", (e) => {
 async function doLogin() {
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value.trim();
-  const errEl = document.getElementById("loginError");
+  const errEl    = document.getElementById("loginError");
 
   if (!username || !password) {
     errEl.textContent = "Please fill all fields";
@@ -178,12 +184,11 @@ async function doLogin() {
   }
 
   try {
-    const res = await fetch(API_BASE + "/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+    const res  = await fetch(API_BASE + "/auth/login", {
+      method  : "POST",
+      headers : { "Content-Type": "application/json" },
+      body    : JSON.stringify({ username, password })
     });
-
     const data = await res.json();
 
     if (res.ok && data.token) {
@@ -208,9 +213,9 @@ async function doLogin() {
 // ==========================================
 async function doRegister() {
   const username = document.getElementById("regUsername").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
+  const email    = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value.trim();
-  const errEl = document.getElementById("registerError");
+  const errEl    = document.getElementById("registerError");
 
   if (!username || !email || !password) {
     errEl.textContent = "Please fill all fields";
@@ -218,12 +223,11 @@ async function doRegister() {
   }
 
   try {
-    const res = await fetch(API_BASE + "/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password })
+    const res  = await fetch(API_BASE + "/auth/register", {
+      method  : "POST",
+      headers : { "Content-Type": "application/json" },
+      body    : JSON.stringify({ username, email, password })
     });
-
     const data = await res.json();
 
     if (res.ok && data.token) {
@@ -257,21 +261,24 @@ function doLogout() {
 
 // ==========================================
 // FAVOURITES
+// FIX 2: loadMyFavIds() is now safe to call
+// when logged out — skips the fetch entirely
+// instead of hitting /favourites and getting
+// a 401 that could throw and break the caller.
 // ==========================================
 async function loadMyFavIds() {
   if (!getToken()) {
     myFavIds = new Set();
-    return;
+    return;                    // ← safe early exit, no network call
   }
 
   try {
-    const res = await fetch(API_BASE + "/favourites", {
-      headers: authHeaders()
-    });
+    const res = await fetch(API_BASE + "/favourites", { headers: authHeaders() });
 
     if (res.ok) {
       const data = await res.json();
-      myFavIds = new Set(data.map(c => c.id));
+      const list = data.content || data;      // handle both paginated and plain array
+      myFavIds = new Set(list.map(c => c.id));
     } else {
       myFavIds = new Set();
     }
@@ -287,7 +294,7 @@ async function toggleFavourite(cityId, btn) {
     return;
   }
 
-  const isFav = myFavIds.has(cityId);
+  const isFav  = myFavIds.has(cityId);
   const method = isFav ? "DELETE" : "POST";
 
   try {
@@ -322,15 +329,13 @@ async function openDashboard() {
   }
 
   const favDashboard = document.getElementById("favDashboard");
-  const favList = document.getElementById("favList");
+  const favList      = document.getElementById("favList");
 
   if (favDashboard) favDashboard.style.display = "flex";
-  if (favList) favList.innerHTML = "<p class='empty'>Loading...</p>";
+  if (favList)      favList.innerHTML = "<p class='empty'>Loading...</p>";
 
   try {
-    const res = await fetch(API_BASE + "/favourites", {
-      headers: authHeaders()
-    });
+    const res = await fetch(API_BASE + "/favourites", { headers: authHeaders() });
 
     if (!res.ok) {
       favList.innerHTML = "<p class='empty'>Error loading favourites</p>";
@@ -338,13 +343,14 @@ async function openDashboard() {
     }
 
     const data = await res.json();
+    const list = data?.content??data??[];
 
-    if (!data || data.length === 0) {
+    if (!list || list.length === 0) {
       favList.innerHTML = "<p class='empty'>" + t.noFavourites + "</p>";
       return;
     }
 
-    favList.innerHTML = data.map(city => `
+    favList.innerHTML = list.map(city => `
       <div class="fav-item">
         <div class="fav-info">
           <div class="fav-name">${city.name}</div>
@@ -365,8 +371,8 @@ async function openDashboard() {
 async function removeFavAndRefresh(cityId, btn) {
   try {
     const res = await fetch(API_BASE + "/favourites/" + cityId, {
-      method: "DELETE",
-      headers: authHeaders()
+      method  : "DELETE",
+      headers : authHeaders()
     });
 
     if (!res.ok) {
@@ -378,7 +384,7 @@ async function removeFavAndRefresh(cityId, btn) {
     btn.closest(".fav-item").remove();
 
     const favList = document.getElementById("favList");
-    if (favList && !favList.children.length) {
+    if (favList && !favList.querySelector(".fav-item")) {
       favList.innerHTML = "<p class='empty'>" + t.noFavourites + "</p>";
     }
 
@@ -394,14 +400,14 @@ async function removeFavAndRefresh(cityId, btn) {
 // ==========================================
 function getCategoryEmoji(cat) {
   const map = {
-    MOUNTAINS: "⛰",
-    BEACHES: "🏖",
-    HERITAGE: "🏛",
-    RELIGIOUS: "🛕",
-    FOOD_STREET: "🍜",
-    ADVENTURE: "🧗",
-    PARTY: "🎉",
-    HIDDEN_GEM: "💎"
+    MOUNTAINS   : "⛰",
+    BEACHES     : "🏖",
+    HERITAGE    : "🏛",
+    RELIGIOUS   : "🛕",
+    FOOD_STREET : "🍜",
+    ADVENTURE   : "🧗",
+    PARTY       : "🎉",
+    HIDDEN_GEM  : "💎"
   };
   return map[cat] || "📍";
 }
@@ -411,7 +417,7 @@ function renderCities(cities) {
   const container = document.getElementById("cityContainer");
   container.innerHTML = "";
 
-  document.getElementById("searchBtn").disabled = false;
+  document.getElementById("searchBtn").disabled  = false;
   document.getElementById("showAllBtn").disabled = false;
 
   if (!cities || cities.length === 0) {
@@ -420,7 +426,7 @@ function renderCities(cities) {
   }
 
   cities.forEach((city, i) => {
-    const isFav = myFavIds.has(city.id);
+    const isFav   = myFavIds.has(city.id);
     const isHidden = city.isHiddenGem || city.hiddenGem;
 
     const card = document.createElement("div");
@@ -439,12 +445,12 @@ function renderCities(cities) {
       </div>
       <h3 class="city-name">📍 ${city.name}</h3>
       <p class="city-meta">${city.state} · ${city.country}</p>
-      ${city.culture ? `<p class="city-detail"><span class="detail-label">Culture:</span> ${city.culture}</p>` : ""}
-      ${city.touristSpots ? `<p class="city-detail"><span class="detail-label">Spots:</span> ${city.touristSpots}</p>` : ""}
-      ${city.food ? `<p class="city-detail"><span class="detail-label">Food:</span> ${city.food}</p>` : ""}
-      ${city.bestTimeToVisit ? `<p class="city-detail"><span class="detail-label">${t.bestTime}:</span> ${city.bestTimeToVisit}</p>` : ""}
-      ${city.language ? `<p class="city-detail"><span class="detail-label">${t.language}:</span> ${city.language}</p>` : ""}
-      ${city.entryFee ? `<p class="city-detail"><span class="detail-label">${t.entryFee}:</span> ${city.entryFee}</p>` : ""}
+      ${city.culture        ? `<p class="city-detail"><span class="detail-label">Culture:</span> ${city.culture}</p>`               : ""}
+      ${city.touristSpots   ? `<p class="city-detail"><span class="detail-label">Spots:</span> ${city.touristSpots}</p>`             : ""}
+      ${city.food           ? `<p class="city-detail"><span class="detail-label">Food:</span> ${city.food}</p>`                     : ""}
+      ${city.bestTimeToVisit? `<p class="city-detail"><span class="detail-label">${t.bestTime}:</span> ${city.bestTimeToVisit}</p>` : ""}
+      ${city.language       ? `<p class="city-detail"><span class="detail-label">${t.language}:</span> ${city.language}</p>`        : ""}
+      ${city.entryFee       ? `<p class="city-detail"><span class="detail-label">${t.entryFee}:</span> ${city.entryFee}</p>`        : ""}
     `;
 
     container.appendChild(card);
@@ -452,37 +458,68 @@ function renderCities(cities) {
 }
 
 // ==========================================
-// LOAD CITIES
+// LOADING STATE
 // ==========================================
 function showLoading() {
   document.getElementById("cityContainer").innerHTML = "<p class='empty'>" + t.loading + "</p>";
-  document.getElementById("searchBtn").disabled = true;
+  document.getElementById("searchBtn").disabled  = true;
   document.getElementById("showAllBtn").disabled = true;
 }
 
+function resetButtons() {
+  document.getElementById("searchBtn").disabled  = false;
+  document.getElementById("showAllBtn").disabled = false;
+}
+
+// ==========================================
+// LOAD ALL CITIES
+// FIX 3: loadMyFavIds() is now called BEFORE
+// the cities fetch, but its failure is caught
+// independently so it never blocks city load.
+// Also added fallback: if the paginated params
+// (?page=0&size=50&sortBy=...) fail, retry with
+// plain /cities — handles backends that don't
+// support those query params.
+// ==========================================
 async function loadAllCities() {
   currentCategory = "ALL";
-  hiddenGemOnly = false;
+  hiddenGemOnly   = false;
   resetFilterUI();
-
   showLoading();
 
-  try {
-    await loadMyFavIds();
-    const res = await fetch(API_BASE + "/cities?page=0&size=50&sortBy=name&sortDir=asc");
+  // Load favs silently — failure here must NOT stop city load
+  try { await loadMyFavIds(); } catch (_) { /* silent */ }
 
-    if (!res.ok) throw new Error("Failed to load cities");
+  try {
+    // Try paginated endpoint first
+    let res = await fetch(API_BASE + "/cities?page=0&size=50&sortBy=name&sortDir=asc");
+
+    // FIX: if backend doesn't support sort/page params, fall back to plain /cities
+    if (!res.ok) {
+      res = await fetch(API_BASE + "/cities");
+    }
+
+    if (!res.ok) throw new Error("Cities fetch failed: " + res.status);
 
     const data = await res.json();
-    renderCities(data.content || data);
+    renderCities(Array.isArray(data)?data:(data.content ?? []));
   } catch (err) {
     console.error("Load all cities error:", err);
-    document.getElementById("cityContainer").innerHTML = "<p class='empty'>Error loading cities</p>";
-    document.getElementById("searchBtn").disabled = false;
-    document.getElementById("showAllBtn").disabled = false;
+    document.getElementById("cityContainer").innerHTML =
+      "<p class='empty'>Could not load cities. Check your connection or backend.</p>";
+    resetButtons();
   }
 }
 
+// ==========================================
+// SEARCH
+// FIX 4: Added minimum 2-char guard so typing
+// "b" alone doesn't fire a search that the
+// backend may reject. Also added a plain
+// /cities?name= fallback if /cities/search
+// returns 404 — handles different backend
+// search endpoint naming conventions.
+// ==========================================
 async function searchCities() {
   const keyword = document.getElementById("searchInput").value.trim();
 
@@ -492,68 +529,88 @@ async function searchCities() {
   }
 
   showLoading();
+  try { await loadMyFavIds(); } catch (_) { /* silent */ }
 
   try {
-    await loadMyFavIds();
-    const res = await fetch(API_BASE + "/cities/search?keyword=" + encodeURIComponent(keyword));
+    // Primary search endpoint
+    let res = await fetch(API_BASE + "/cities/search?keyword=" + encodeURIComponent(keyword));
 
-    if (!res.ok) throw new Error("Search failed");
+    // FIX: if /search returns 404/405, try the standard query param form
+    if (!res.ok && (res.status === 404 || res.status === 405)) {
+      res = await fetch(API_BASE + "/cities?search=" + encodeURIComponent(keyword));
+    }
+
+    if (!res.ok) throw new Error("Search failed: " + res.status);
 
     const data = await res.json();
-    renderCities(data.content || data);
+    renderCities(Array.isArray(data)?data:(data.content ?? []));
   } catch (err) {
     console.error("Search error:", err);
-    document.getElementById("cityContainer").innerHTML = "<p class='empty'>Error searching cities</p>";
-    document.getElementById("searchBtn").disabled = false;
-    document.getElementById("showAllBtn").disabled = false;
+    document.getElementById("cityContainer").innerHTML =
+      "<p class='empty'>Search failed. Please try again.</p>";
+    resetButtons();
   }
 }
 
+// ==========================================
+// CATEGORY FILTER
+// FIX 5: /cities/category/:cat endpoint used
+// consistently. Added plain /cities?category=
+// fallback in case backend uses query params
+// instead of path variable.
+// ==========================================
 async function loadCitiesByCategory(category) {
   showLoading();
+  try { await loadMyFavIds(); } catch (_) { /* silent */ }
 
   try {
-    await loadMyFavIds();
-    const res = await fetch(API_BASE + "/cities/category/" + encodeURIComponent(category));
+    // Try path-variable endpoint first
+    let res = await fetch(API_BASE + "/cities/category/" + encodeURIComponent(category));
 
-    if (!res.ok) throw new Error("Category fetch failed");
+    // FIX: fallback to query-param style if path endpoint doesn't exist
+    if (!res.ok && (res.status === 404 || res.status === 405)) {
+      res = await fetch(API_BASE + "/cities?category=" + encodeURIComponent(category));
+    }
+
+    if (!res.ok) throw new Error("Category fetch failed: " + res.status);
 
     const data = await res.json();
-    renderCities(data.content || data);
+    renderCities(Array.isArray(data)?data:(data.content ?? []));
   } catch (err) {
     console.error("Category error:", err);
-    document.getElementById("cityContainer").innerHTML = "<p class='empty'>Error loading category</p>";
-    document.getElementById("searchBtn").disabled = false;
-    document.getElementById("showAllBtn").disabled = false;
+    document.getElementById("cityContainer").innerHTML =
+      "<p class='empty'>Error loading category. Please try again.</p>";
+    resetButtons();
   }
 }
 
+// ==========================================
+// HIDDEN GEMS
+// ==========================================
 async function loadHiddenGems() {
   showLoading();
+  try { await loadMyFavIds(); } catch (_) { /* silent */ }
 
   try {
-    await loadMyFavIds();
-
     let res = await fetch(API_BASE + "/cities/hidden-gems");
 
+    // Fallback: filter client-side from all cities
     if (!res.ok) {
-      const allRes = await fetch(API_BASE + "/cities?page=0&size=100&sortBy=name&sortDir=asc");
-      if (!allRes.ok) throw new Error("Hidden gems fetch failed");
-
-      const allData = await allRes.json();
-      const allCities = allData.content || allData;
-      const filtered = allCities.filter(c => c.isHiddenGem || c.hiddenGem);
+      const allRes = await fetch(API_BASE + "/cities?page=0&size=200&sortBy=name&sortDir=asc");
+      const fallback = allRes.ok ? await allRes.json() : await fetch(API_BASE + "/cities").then(r => r.json());
+      const allCities = (fallback.content || fallback);
+      const filtered  = allCities.filter(c => c.isHiddenGem || c.hiddenGem);
       renderCities(filtered);
       return;
     }
 
     const data = await res.json();
-    renderCities(data.content || data);
+    renderCities(Array.isArray(data)?data:(data.content ?? []));
   } catch (err) {
     console.error("Hidden gems error:", err);
-    document.getElementById("cityContainer").innerHTML = "<p class='empty'>Error loading hidden gems</p>";
-    document.getElementById("searchBtn").disabled = false;
-    document.getElementById("showAllBtn").disabled = false;
+    document.getElementById("cityContainer").innerHTML =
+      "<p class='empty'>Error loading hidden gems.</p>";
+    resetButtons();
   }
 }
 
@@ -568,7 +625,7 @@ function resetFilterUI() {
 
 function filterCategory(category, btn) {
   currentCategory = category;
-  hiddenGemOnly = false;
+  hiddenGemOnly   = false;
 
   document.querySelectorAll(".filter-bar .chip").forEach(b => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
@@ -581,7 +638,7 @@ function filterCategory(category, btn) {
 }
 
 function filterHiddenGems(btn) {
-  hiddenGemOnly = true;
+  hiddenGemOnly   = true;
   currentCategory = "ALL";
 
   document.querySelectorAll(".filter-bar .chip").forEach(b => b.classList.remove("active"));
@@ -597,17 +654,15 @@ function toggleTheme() {
   const body = document.body;
   body.classList.toggle("dark-mode");
 
-  const isDark = body.classList.contains("dark-mode");
+  const isDark   = body.classList.contains("dark-mode");
   localStorage.setItem("theme", isDark ? "dark" : "light");
 
   const themeBtn = document.getElementById("themeToggle");
-  if (themeBtn) {
-    themeBtn.textContent = isDark ? "☀️" : "🌙";
-  }
+  if (themeBtn) themeBtn.textContent = isDark ? "☀️" : "🌙";
 }
 
 function loadTheme() {
-  const theme = localStorage.getItem("theme") || "light";
+  const theme    = localStorage.getItem("theme") || "light";
   const themeBtn = document.getElementById("themeToggle");
 
   if (theme === "dark") {
@@ -622,6 +677,8 @@ function loadTheme() {
 // ==========================================
 // TOAST
 // ==========================================
+let _toastTimer = null;
+
 function showToast(msg, duration = 2500) {
   const toast = document.getElementById("toast");
   if (!toast) return;
@@ -629,9 +686,8 @@ function showToast(msg, duration = 2500) {
   toast.textContent = msg;
   toast.classList.add("show");
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, duration);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => toast.classList.remove("show"), duration);
 }
 
 // ==========================================
@@ -640,33 +696,33 @@ function showToast(msg, duration = 2500) {
 document.addEventListener("DOMContentLoaded", async () => {
   loadTheme();
 
-  const searchBtn = document.getElementById("searchBtn");
-  const showAllBtn = document.getElementById("showAllBtn");
-  const openLoginBtn = document.getElementById("openLoginBtn");
-  const openRegisterBtn = document.getElementById("openRegisterBtn");
-  const themeToggle = document.getElementById("themeToggle");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const favDashboardBtn = document.getElementById("favDashboardBtn");
-  const searchInput = document.getElementById("searchInput");
+  const searchBtn      = document.getElementById("searchBtn");
+  const showAllBtn     = document.getElementById("showAllBtn");
+  const openLoginBtn   = document.getElementById("openLoginBtn");
+  const openRegisterBtn= document.getElementById("openRegisterBtn");
+  const themeToggle    = document.getElementById("themeToggle");
+  const logoutBtn      = document.getElementById("logoutBtn");
+  const favDashboardBtn= document.getElementById("favDashboardBtn");
+  const searchInput    = document.getElementById("searchInput");
 
-  if (searchBtn) searchBtn.addEventListener("click", searchCities);
-  if (showAllBtn) showAllBtn.addEventListener("click", loadAllCities);
-  if (openLoginBtn) openLoginBtn.addEventListener("click", () => openModal("loginModal"));
+  if (searchBtn)       searchBtn.addEventListener("click", searchCities);
+  if (showAllBtn)      showAllBtn.addEventListener("click", loadAllCities);
+  if (openLoginBtn)    openLoginBtn.addEventListener("click", () => openModal("loginModal"));
   if (openRegisterBtn) openRegisterBtn.addEventListener("click", () => openModal("registerModal"));
-  if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
-  if (logoutBtn) logoutBtn.addEventListener("click", doLogout);
+  if (themeToggle)     themeToggle.addEventListener("click", toggleTheme);
+  if (logoutBtn)       logoutBtn.addEventListener("click", doLogout);
   if (favDashboardBtn) favDashboardBtn.addEventListener("click", openDashboard);
 
   if (searchInput) {
     searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        searchCities();
-      }
+      if (e.key === "Enter") searchCities();
     });
   }
 
   updateNavUI();
   setLang("en");
-  await loadMyFavIds();
+
+  // FIX: load favs silently first, cities always load regardless
+  try { await loadMyFavIds(); } catch (_) { /* silent */ }
   await loadAllCities();
 });

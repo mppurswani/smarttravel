@@ -6,5 +6,7 @@ public enum CityCategory {
     PARTY,
     RELIGIOUS,
     ADVENTURE,
-    HERITAGE
+    HERITAGE,
+    HIDDEN_GEM,
+    FOOD_STREET
 }

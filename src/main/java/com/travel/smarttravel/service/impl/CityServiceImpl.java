@@ -77,16 +77,24 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public List<CityDTO> searchByKeyword(String keyword){
+public List<CityDTO> searchByKeyword(String keyword){
 
-        return cityRepository
-                .findByNameContainingIgnoreCaseOrStateContainingIgnoreCaseOrCountryContainingIgnoreCase(
-                        keyword, keyword, keyword
-                )
-                .stream()
-        .map(this::convertToDTO)
-        .collect(Collectors.toList());
-    }
+    List<City> cities = cityRepository.searchAll(keyword);
+
+    return cities.stream()
+            // remove duplicates by ID
+            .collect(Collectors.collectingAndThen(
+                    Collectors.toMap(
+                            City::getId,
+                            city -> city,
+                            (c1, c2) -> c1
+                    ),
+                    map -> map.values()
+            ))
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+}
 
     @Override
     public List<CityDTO> searchByCountry(String country){

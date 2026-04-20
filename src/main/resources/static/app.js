@@ -1,17 +1,4 @@
-// ==========================================
-// CONFIG
-// FIX 1: Use relative path "/api" instead of
-// window.location.origin + "/api".
-// window.location.origin includes the port on
-// localhost (e.g. :5500 from Live Server) so
-// the fetch goes to :5500/api instead of
-// :8080/api — causing "Error loading cities"
-// on both initial load AND search.
-// Relative "/api" always hits the same server
-// that served the HTML, which is correct when
-// Spring Boot serves the frontend, or when
-// proxied via Railway.
-// ==========================================
+
 const API_BASE = "/api";
 const TOKEN_KEY = "smarttravel_token";
 const USER_KEY  = "smarttravel_user";
@@ -502,7 +489,16 @@ async function loadAllCities() {
     if (!res.ok) throw new Error("Cities fetch failed: " + res.status);
 
     const data = await res.json();
-    renderCities(Array.isArray(data)?data:(data.content ?? []));
+
+// normalize response
+const list = Array.isArray(data) ? data : (data.content ?? []);
+
+// 🔥 remove duplicates by ID
+const uniqueCities = Array.from(
+  new Map(list.map(city => [city.id, city])).values()
+);
+
+renderCities(uniqueCities);
   } catch (err) {
     console.error("Load all cities error:", err);
     document.getElementById("cityContainer").innerHTML =
@@ -513,13 +509,6 @@ async function loadAllCities() {
 
 // ==========================================
 // SEARCH
-// FIX 4: Added minimum 2-char guard so typing
-// "b" alone doesn't fire a search that the
-// backend may reject. Also added a plain
-// /cities?name= fallback if /cities/search
-// returns 404 — handles different backend
-// search endpoint naming conventions.
-// ==========================================
 async function searchCities() {
   const keyword = document.getElementById("searchInput").value.trim();
 
@@ -543,7 +532,16 @@ async function searchCities() {
     if (!res.ok) throw new Error("Search failed: " + res.status);
 
     const data = await res.json();
-    renderCities(Array.isArray(data)?data:(data.content ?? []));
+
+// normalize response
+const list = Array.isArray(data) ? data : (data.content ?? []);
+
+// 🔥 remove duplicates by ID
+const uniqueCities = Array.from(
+  new Map(list.map(city => [city.id, city])).values()
+);
+
+renderCities(uniqueCities);
   } catch (err) {
     console.error("Search error:", err);
     document.getElementById("cityContainer").innerHTML =
@@ -575,7 +573,16 @@ async function loadCitiesByCategory(category) {
     if (!res.ok) throw new Error("Category fetch failed: " + res.status);
 
     const data = await res.json();
-    renderCities(Array.isArray(data)?data:(data.content ?? []));
+
+// normalize response
+const list = Array.isArray(data) ? data : (data.content ?? []);
+
+// 🔥 remove duplicates by ID
+const uniqueCities = Array.from(
+  new Map(list.map(city => [city.id, city])).values()
+);
+
+renderCities(uniqueCities);
   } catch (err) {
     console.error("Category error:", err);
     document.getElementById("cityContainer").innerHTML =
@@ -605,7 +612,16 @@ async function loadHiddenGems() {
     }
 
     const data = await res.json();
-    renderCities(Array.isArray(data)?data:(data.content ?? []));
+
+// normalize response
+const list = Array.isArray(data) ? data : (data.content ?? []);
+
+// 🔥 remove duplicates by ID
+const uniqueCities = Array.from(
+  new Map(list.map(city => [city.id, city])).values()
+);
+
+renderCities(uniqueCities);
   } catch (err) {
     console.error("Hidden gems error:", err);
     document.getElementById("cityContainer").innerHTML =

@@ -1,7 +1,7 @@
 ## SmartTravel 🌍 
 
-A **full-stack Java Spring Boot** city exploration and travel discovery platform featuring Indian cities, category-based browsing, hidden gems, and per-user favourites. The current demo showcases 12  curated cities , while the backend architecture supports scalable city expansion through admin APIs.
-
+A **full-stack Java Spring Boot** city exploration and travel discovery platform featuring Indian cities, category-based browsing, hidden gems, and per-user favourites. The current demo showcases 100+  curated cities , while the backend architecture supports scalable city expansion through admin APIs.
+Designed with production-level practices including data integrity constraints, secure configuration management, and scalable REST architecture.
 
 ## ✨ Features
 
@@ -39,7 +39,7 @@ Hidden Gems 💎
 
 ### REST APIs 
 
-Pagination and case-insensitive partial search (name/state/country)
+Case-insensitive keyword search across city name,state,country.
 
 
 ### Swagger UI 
@@ -57,6 +57,16 @@ Interactive API docs + JWT auth support
 - H2 used for test configuration
 - Current test suite passes successfully
 
+### 🧹 Data Integrity Improvements
+- Removed duplicate city entries using optimized SQL queries
+- Enforced uniqueness using composite constraint (name, state, country)
+- Ensures clean search results and consistent API responses
+
+ ### 🔐 Configuration Security
+- Sensitive credentials (DB password, JWT secret) are externalized using environment variables
+- Prevents exposure of secrets in source code
+
+  
 ## 🛠 Tech Stack
 | Layer | Technology |
 | --- | --- |
@@ -106,7 +116,7 @@ API Base →
 http://localhost:8080/api
 
 Swagger UI →
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
 
 
 ## API Endpoints
@@ -121,12 +131,11 @@ http://localhost:8080/swagger-ui.html
 ### Cities (Public)
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | /api/cities/all | All cities |
-| GET | /api/cities?page=0&size=10 | Paginated |
+| GET | /api/cities | All cities |
 | GET | /api/cities/{id} | City by ID |
-| GET | /api/cities/search?name=Delhi | Fuzzy search |
+| GET | /api/cities/search?keyword=Delhi | Fuzzy search |
 | GET | /api/cities/category/BEACHES | Filter category |
-| GET | /api/cities/hidden-gems | Hidden gems 💎 |
+| GET | /api/cities/hidden-gems | HIDDEN_GEM 💎 |
 
 
 ### Cities (Admin Only)
@@ -204,16 +213,16 @@ com.travel.smarttravel/
 
 ## 🏙️ Frontend Demo Cities (Currently Showcased)
 
-The frontend currently showcases **12 curated Indian cities** across multiple categories:
+The frontend currently showcases **100+ curated Indian cities** across multiple categories:
 
-- **HERITAGE 🏛️** — Ahmedabad, Delhi, Jaipur, Kolkata
-- **PARTY 🎉** — Bengaluru, Pune
-- **MOUNTAINS ⛰️** — Chandigarh
-- **BEACHES 🏖️** — Chennai, Kochi
-- **FOOD_STREET 🍜** — Hyderabad, Mumbai
-- **RELIGIOUS 🛕** — Varanasi
-
-Additional categories such as **ADVENTURE 🧗** and **HIDDEN_GEM 💎** are supported by the backend/admin workflow and can be expanded further.
+- **HERITAGE 🏛️** — Delhi, Kolkata, Jaipur, Srinagar, Mysore,etc
+- **PARTY 🎉** — Bengaluru, Pune,Lucknow,Indore,etc
+- **MOUNTAINS ⛰️** — Chandigarh,Mukteshwar,Nainital,Pahalgam,Mussoorie,etc
+- **BEACHES 🏖️** — Chennai, Kochi,Goa,Kovalam,Pondicherry,etc
+- **FOOD_STREET 🍜** — Hyderabad, Mumbai,Nagpur,Patna,Kanpur,etc
+- **RELIGIOUS 🛕** — Varanasi,Haridwar,Amritsar,Ujjain,Ayodhya,etc
+- **ADVENTURE 🧗**— Rishikesh,Auli,Manali,Spiti Valley,Chopta,etc
+- **HIDDEN_GEM 💎**—  Dawki,Alleppey,Cherrapunji,Lakshadweep,Hampi,etc
 
 These cities include curated details such as:
 - Culture overview
@@ -226,14 +235,14 @@ These cities include curated details such as:
 ## City Categories
 | Category | Emoji | Examples |
 | --- | --- | --- |
-| MOUNTAINS | ⛰️ | Chandigarh |
-| BEACHES | 🏖️ | Chennai, Kochi |
-| HERITAGE | 🏛️ | Delhi, Kolkata, Jaipur |
-| RELIGIOUS | 🛕 | Varanasi |
-| FOOD_STREET | 🍜 | Hyderabad, Mumbai |
-| PARTY | 🎉 | Bengaluru, Pune |
-| HIDDEN_GEMS | 💎 | Admin can add |
-| ADVENTURE | 🧗 | Admin can add |
+| MOUNTAINS | ⛰️ | Chandigarh, Mukteshwar, Nainital, Pahalgam, Mussoorie,etc |
+| BEACHES | 🏖️ | Chennai, Kochi, Goa, Kovalam, Pondicherry,etc |
+| HERITAGE | 🏛️ | Delhi, Kolkata, Jaipur, Srinagar, Mysore,etc |
+| RELIGIOUS | 🛕 | Varanasi, Haridwar, Amritsar, Ujjain, Ayodhya,etc |
+| FOOD_STREET | 🍜 | Hyderabad, Mumbai, Nagpur, Patna, Kanpur,etc |
+| PARTY | 🎉 | Bengaluru, Pune, Lucknow, Indore,etc |
+| HIDDEN_GEM | 💎 | Dawki, Alleppey, Cherrapunji, Lakshadweep, Hampi,etc |
+| ADVENTURE | 🧗 | Rishikesh, Auli, Manali, Spiti Valley, Chopta,etc |
 
 ## 🔐 Security
 
@@ -264,9 +273,41 @@ CityServiceTest → 5 tests (Mockito)
 SmartTravelApplicationTests → 1 test (context)
 
 
+## 🐳 Docker Support
+The project includes Docker configuration for containerized deployment.
+
+### Build Docker Image
+```bash
+docker build -t smarttravel .
+```
+### Run
+```bash
+docker run -p 8080:8080 smarttravel
+```
+### Benefits
+- Consistent environment across systems
+- Easy deployment on cloud platforms (Railway, Render, etc.)
+
+
+## 🚀 Deployment
+
+The application is containerized using Docker and can be deployed on cloud platforms.
+
+### Previous Deployment
+- Deployed on Railway using Docker containerization
+- Backend + MySQL configured via environment variables
+
+### Current Deployment Plan
+- Backend → Render (Spring Boot API hosting)
+- Frontend → Vercel (Static hosting)
+
+### Deployment Features
+- Environment-based configuration (DB URL, JWT secret)
+- Production-ready REST API structure
+- Scalable architecture for cloud platforms
+
 ## ⚡Performance
 
-- Pagination support for scalable city listing
 - Case-insensitive partial search across city name, state, and country
 - Stateless JWT-based authentication flow
 - Lightweight demo dataset with admin-driven expansion support

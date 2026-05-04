@@ -1,4 +1,4 @@
-INSERT INTO city (
+INSERT IGNORE INTO city (
     name, state, country, culture, tourist_spots, food,
     best_time_to_visit, category, entry_fee, is_hidden_gem, language, nearby_attractions
 ) VALUES

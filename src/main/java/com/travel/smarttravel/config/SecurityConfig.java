@@ -3,13 +3,13 @@ package com.travel.smarttravel.config;
 import com.travel.smarttravel.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -27,60 +27,46 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
             .csrf(csrf -> csrf.disable())
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authorizeHttpRequests(auth -> auth
 
-                // ===== PUBLIC FRONTEND FILES =====
-                .antMatchers(
-                    "/",
-                    "/index.html",
-                    "/favicon.ico",
-                    "/*.css",
-                    "/*.js",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/assets/**"
+                // PUBLIC
+                .requestMatchers(
+                    new AntPathRequestMatcher("/"),
+                    new AntPathRequestMatcher("/index.html"),
+                    new AntPathRequestMatcher("/favicon.ico"),
+                    new AntPathRequestMatcher("/css/**"),
+                    new AntPathRequestMatcher("/js/**"),
+                    new AntPathRequestMatcher("/images/**"),
+                    new AntPathRequestMatcher("/assets/**")
                 ).permitAll()
 
-                // ===== PUBLIC AUTH ENDPOINTS =====
-                .antMatchers("/api/auth/**").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/health")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
 
-                // ===== PUBLIC HEALTH ENDPOINT =====
-                .antMatchers("/api/health").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
 
-                // ===== SPRING ERROR ENDPOINT =====
-                .antMatchers("/error").permitAll()
+                // CITY APIs (NO HttpMethod version)
+             .requestMatchers(new AntPathRequestMatcher("/api/cities", "GET")).permitAll()
+.requestMatchers(new AntPathRequestMatcher("/api/cities/**", "GET")).permitAll()
 
-                // ===== SWAGGER / OPENAPI =====
-                .antMatchers(
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs",
-                    "/swagger-resources/**",
-                    "/webjars/**"
-                ).permitAll()
+                // FAVOURITES
+                .requestMatchers(new AntPathRequestMatcher("/api/favourites/**"))
+                    .hasAnyRole("USER", "ADMIN")
 
-                // ===== CITY APIs =====
-                .antMatchers(HttpMethod.GET, "/api/cities/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/cities/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/cities/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/cities/**").hasRole("ADMIN")
-
-                // ===== FAVOURITES =====
-                .antMatchers(HttpMethod.GET, "/api/favourites/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/favourites/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/favourites/**").hasAnyRole("USER", "ADMIN")
-
-                // ===== EVERYTHING ELSE =====
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

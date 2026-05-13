@@ -19,7 +19,7 @@ public class FavouriteController {
 
     // Add city to favourites
     // POST /api/favourites/3
-    @PostMapping("/{cityId}")
+    @PostMapping("/{cityId:\\d+}")
     public ResponseEntity<String> addFavourite(
             @PathVariable Long cityId) {
         return ResponseEntity.ok(
@@ -28,7 +28,7 @@ public class FavouriteController {
 
     // Remove city from favourites
     // DELETE /api/favourites/3
-    @DeleteMapping("/{cityId}")
+    @DeleteMapping("/{cityId:\\d+}")
     public ResponseEntity<String> removeFavourite(
             @PathVariable Long cityId) {
         return ResponseEntity.ok(

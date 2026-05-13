@@ -11,11 +11,7 @@ import java.util.Locale;
 @Configuration
 public class LocaleConfig {
 
-    // ==========================================
-    // READS Accept-Language header from request
-    // Frontend sends: Accept-Language: hi
-    // API responds in Hindi automatically
-    // ==========================================
+   
     @Bean
     public AcceptHeaderLocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver resolver =

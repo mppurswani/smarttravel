@@ -1,30 +1,31 @@
 package com.travel.smarttravel.service;
 
-import java.util.List;
 import com.travel.smarttravel.dto.CityDTO;
+import com.travel.smarttravel.dto.CityPageResponse; // ✅ REQUIRED
 import com.travel.smarttravel.entity.CityCategory;
+
+import java.util.List;
 
 public interface CityService {
 
-    // Single city add
+    // CREATE
     CityDTO addCity(CityDTO cityDTO);
 
-    // Bulk add
     List<CityDTO> addCities(List<CityDTO> cityDTOList);
 
-    List<CityDTO> getAllCitiesWithoutPagination();
-
+    // READ SINGLE
     CityDTO getCityById(Long id);
 
-    List<CityDTO> searchByName(String name);
-
-    List<CityDTO> searchByState(String state);
-    List<CityDTO> searchByKeyword(String keyword);
-
-    List<CityDTO> searchByCountry(String country);
-
+    // DELETE
     void deleteCity(Long id);
 
-    List<CityDTO> getCitiesByCategory(CityCategory category);
+    // PAGINATION + FILTER
+    CityPageResponse getCities(String keyword,
+                              String country,
+                              CityCategory category,
+                              int page,
+                              int size);
+
+    // OPTIONAL
     List<CityDTO> getHiddenGems();
 }

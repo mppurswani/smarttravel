@@ -20,7 +20,7 @@ public class SwaggerConfig {
                 .version("2.0")
                 .description(
                     "Smart Travel Recommendation System — " +
-                    "Explore 50+ Indian cities, hidden gems, " +
+                    "Explore 100+ Indian cities, hidden gems, " +
                     "categories and manage your favourites.")
                 .contact(new Contact()
                     .name("Mayank Purswani")

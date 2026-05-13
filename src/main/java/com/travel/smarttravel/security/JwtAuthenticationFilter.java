@@ -31,51 +31,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // ✅ SKIP PUBLIC ENDPOINTS
-        if (path.startsWith("/api/cities")
-                || path.startsWith("/api/auth")
+        // ONLY skip truly public endpoints
+        if (path.startsWith("/api/auth")
                 || path.startsWith("/swagger")
-                || path.startsWith("/v3/api-docs")) {
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/api/health")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        try {
-            String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-                String token = authHeader.substring(7);
+            String token = authHeader.substring(7);
 
-                if (jwtUtil.isTokenValid(token)
-                        && !jwtUtil.isTokenExpired(token)
-                        && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtUtil.isTokenValid(token)
+                    && !jwtUtil.isTokenExpired(token)
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    String username = jwtUtil.extractUsername(token);
-                    String role = jwtUtil.extractRole(token);
-                    String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+                String username = jwtUtil.extractUsername(token);
+                String role = jwtUtil.extractRole(token);
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    List.of(new SimpleGrantedAuthority(authority))
-                            );
+                String authority = role.startsWith("ROLE_")
+                        ? role
+                        : "ROLE_" + role;
 
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                List.of(new SimpleGrantedAuthority(authority))
+                        );
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext();
         }
 
-        // ✅ ALWAYS CONTINUE CHAIN
         filterChain.doFilter(request, response);
     }
 }

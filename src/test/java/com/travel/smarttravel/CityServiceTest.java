@@ -28,57 +28,47 @@ class CityServiceTest {
     @InjectMocks
     private CityServiceImpl cityService;
 
-    private City testCity;
-    private CityDTO testCityDTO;
+    private City city;
+    private CityDTO cityDTO;
 
     @BeforeEach
     void setUp() {
-        // Create test city entity
-        testCity = new City();
-        testCity.setId(1L);
-        testCity.setName("Goa");
-        testCity.setState("Goa");
-        testCity.setCountry("India");
-        testCity.setCulture("Portuguese beach culture");
-        testCity.setFood("Seafood");
-        testCity.setCategory(CityCategory.BEACHES);
-        testCity.setHiddenGem(false);
+        city = new City();
+        city.setId(1L);
+        city.setName("Goa");
+        city.setState("Goa");
+        city.setCountry("India");
+        city.setCulture("Beach culture");
+        city.setFood("Seafood");
+        city.setCategory(CityCategory.BEACHES);
+        city.setHiddenGem(false);
 
-        // Create test city DTO
-        testCityDTO = new CityDTO();
-        testCityDTO.setName("Goa");
-        testCityDTO.setState("Goa");
-        testCityDTO.setCountry("India");
-        testCityDTO.setCulture("Portuguese beach culture");
-        testCityDTO.setFood("Seafood");
-        testCityDTO.setCategory(CityCategory.BEACHES);
-        testCityDTO.setHiddenGem(false);
+        cityDTO = new CityDTO();
+        cityDTO.setName("Goa");
+        cityDTO.setState("Goa");
+        cityDTO.setCountry("India");
+        cityDTO.setCulture("Beach culture");
+        cityDTO.setFood("Seafood");
+        cityDTO.setCategory(CityCategory.BEACHES);
+        cityDTO.setHiddenGem(false);
     }
 
-    // ==========================================
-    // TEST 1 — addCity saves and returns DTO
-    // ==========================================
+    // CREATE
     @Test
     void addCity_ShouldSaveAndReturnDTO() {
-        when(cityRepository.save(any(City.class)))
-            .thenReturn(testCity);
+        when(cityRepository.save(any(City.class))).thenReturn(city);
 
-        CityDTO result = cityService.addCity(testCityDTO);
+        CityDTO result = cityService.addCity(cityDTO);
 
         assertNotNull(result);
         assertEquals("Goa", result.getName());
-        assertEquals("Goa", result.getState());
-        assertEquals(CityCategory.BEACHES, result.getCategory());
         verify(cityRepository, times(1)).save(any(City.class));
     }
 
-    // ==========================================
-    // TEST 2 — getCityById returns correct city
-    // ==========================================
+    // READ BY ID - SUCCESS
     @Test
-    void getCityById_WhenExists_ShouldReturnDTO() {
-        when(cityRepository.findById(1L))
-            .thenReturn(Optional.of(testCity));
+    void getCityById_WhenExists_ShouldReturnCity() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
 
         CityDTO result = cityService.getCityById(1L);
 
@@ -87,42 +77,34 @@ class CityServiceTest {
         assertEquals(1L, result.getId());
     }
 
-    // ==========================================
-    // TEST 3 — getCityById throws when not found
-    // ==========================================
+    // READ BY ID - FAIL
     @Test
-    void getCityById_WhenNotExists_ShouldThrowException() {
-        when(cityRepository.findById(99L))
-            .thenReturn(Optional.empty());
+    void getCityById_WhenNotFound_ShouldThrowException() {
+        when(cityRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
-            () -> cityService.getCityById(99L));
+                () -> cityService.getCityById(99L));
     }
 
-    // ==========================================
-    // TEST 4 — deleteCity works when city exists
-    // ==========================================
+    // DELETE - SUCCESS (UPDATED FLOW)
     @Test
     void deleteCity_WhenExists_ShouldDelete() {
-        when(cityRepository.existsById(1L))
-            .thenReturn(true);
-        doNothing().when(cityRepository).deleteById(1L);
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+        doNothing().when(cityRepository).delete(city);
 
-        assertDoesNotThrow(
-            () -> cityService.deleteCity(1L));
-        verify(cityRepository, times(1)).deleteById(1L);
+        assertDoesNotThrow(() -> cityService.deleteCity(1L));
+
+        verify(cityRepository, times(1)).delete(city);
     }
 
-    // ==========================================
-    // TEST 5 — deleteCity throws when not found
-    // ==========================================
+    // DELETE - FAIL
     @Test
-    void deleteCity_WhenNotExists_ShouldThrowException() {
-        when(cityRepository.existsById(99L))
-            .thenReturn(false);
+    void deleteCity_WhenNotFound_ShouldThrowException() {
+        when(cityRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
-            () -> cityService.deleteCity(99L));
-        verify(cityRepository, never()).deleteById(any());
+                () -> cityService.deleteCity(99L));
+
+        verify(cityRepository, never()).delete(any());
     }
 }

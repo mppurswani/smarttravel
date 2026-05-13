@@ -2,9 +2,10 @@ package com.travel.smarttravel.dto;
 
 import com.travel.smarttravel.entity.CityCategory;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
-public class CityDTO {
-
+public class CityDTO implements Serializable{
+private static final long serialVersionUID =1L;
     private Long id;
 
     @NotBlank(message = "City name cannot be empty")

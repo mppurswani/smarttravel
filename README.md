@@ -188,7 +188,6 @@ docker run -p 8080:8080 smarttravel
 ## Author
 
 Mayank Purswani
-📧 mayankhero2004@gmail.com
 
 
 
